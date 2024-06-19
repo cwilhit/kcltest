@@ -1,0 +1,23 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: xclusters.platform.acme.co
+spec:
+  compositeTypeRef:
+    apiVersion: platform.acme.co/v1alpha1
+    kind: XCluster
+  mode: Pipeline
+  pipeline:
+  - step: compose
+    functionRef:
+      name: crossplane-contrib-function-kcl
+    input:
+      apiVersion: krm.kcl.dev/v1alpha1
+      kind: KCLRun
+      metadata:
+        name: compose-cluster
+      spec:
+        source: ./composed/nop.k
+  - step: automatically-detect-ready-composed-resources
+    functionRef:
+      name: function-auto-ready
